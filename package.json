@@ -1,0 +1,23 @@
+{
+  "name": "edgegrid",
+  "productName": "edgegrid",
+  "version": "0.1.0",
+  "description": "EdgeGrid auth for Akamai APIs",
+  "main": "index.js",
+  "scripts": {
+    "package-all": "npm run package -- --all",
+    "postinstall": "echo postinstall",
+    "dev": "concurrently --kill-others \"npm run hot-server\" \"npm run start-hot\""
+  },
+  "author": {
+    "name": "Karl Redgate",
+    "email": "karl.redgate@gmail.com",
+    "url": "https://github.com/karlredgate"
+  },
+  "license": "APACHE",
+  "devDependencies": {
+  },
+  "dependencies": {
+    "uuid": "*"
+  }
+}
