@@ -15,6 +15,14 @@
     "url": "https://github.com/karlredgate"
   },
   "license": "APACHE",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/karlredgate/EdgeGrid"
+  },
+  "bugs": {
+    "url": "https://github.com/karlredgate/EdgeGrid/issues"
+  },
+  "homepage": "https://github.com/karlredgate/EdgeGrid",
   "devDependencies": {
   },
   "dependencies": {
