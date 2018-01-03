@@ -364,4 +364,10 @@ module.exports.is_valid_env = function ( env ) {
     return false;
 };
 
+module.exports.is_invalid_env = function ( env ) {
+    if ( env === 'production' ) return false;
+    if ( env === 'staging'    ) return false;
+    return true;
+};
+
 /* vim: set autoindent expandtab sw=4 syntax=javascript: */
