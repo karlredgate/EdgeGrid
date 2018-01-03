@@ -358,4 +358,10 @@ module.exports.delete = function ( path, callback ) {
     return request;
 };
 
+module.exports.is_valid_env = function ( env ) {
+    if ( env === 'production' ) return true;
+    if ( env === 'staging'    ) return true;
+    return false;
+};
+
 /* vim: set autoindent expandtab sw=4 syntax=javascript: */
