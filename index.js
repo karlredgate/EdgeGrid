@@ -59,7 +59,6 @@ Credentials.prototype.keys.client_token = function ( token ) {
 };
 
 Credentials.prototype.load = function ( section ) {
-    // console.log( "Loading credentials from section '" + section + "'" );
     var current_section = null;
     function parse( line ) {
         var name = section_header( line );
@@ -77,6 +76,9 @@ Credentials.prototype.load = function ( section ) {
     var lines = FS.readFileSync(RC).toString().split('\n');
     lines.forEach( parse.bind(this) );
 };
+
+/*
+ */
 
 // Make these new Error types
 function throw_if_bad_credentials( credentials ) {
@@ -109,16 +111,24 @@ function format_header( key ) {
     key.toLowerCase() + ':' + headers[key].trim().replace(/\s+/g, ' ');
 }
 
+/*
+ * Currently using request.body - which is the wrapping EdgeGrid
+ * request object.  I might want to change to using request.proxy.body
+ * to support the use of POST query params in the body.
+ */
 function hash_content( request ) {
     var method = request.proxy.method.toUpperCase();
-    if ( method !== "POST" ) return '';
     // Also check if content size is > 0
-    return body_hash( request.proxy.body );
+    // if ( request.body.length === 0 ) return '';
+    // uncomment this to generate error
+    // if ( method === "POST" ) return body_hash( '' );
+    if ( method === "POST" ) return body_hash( request.body );
+    if ( method === "PUT"  ) return body_hash( request.body );
+    return '';
 }
 
 function content( request ) {
     var content_hash = hash_content( request );
-
     var proxy = request.proxy;
     var filter = format_header.bind(proxy);
     var headers = request.headersToSign.map( filter ).join("\t");
@@ -165,7 +175,7 @@ function auth_header( request ) {
     return header;
 }
 
-const MAX_BODY = 8192;
+const MAX_BODY = 131072;
 
 function body_hash( body ) {
     function format(key) { return key + "=" + body[key]; };
@@ -269,7 +279,6 @@ function Request( _params, callback ) {
     };
 
     this.proxy = HTTPS.request( params, accept.bind(this) );
-    sign( this );
     this.proxy.on( 'error', error_handler.bind(this.proxy) );
 }
 
@@ -279,15 +288,24 @@ Request.prototype.load_credentials = function ( options ) {
     this.credentials = credentials;
 };
 
+function set_content_type( request ) {
+    if ( typeof request.body === 'undefined' ) return;
+    if ( request.body === '' ) return;
+    request.proxy.setHeader( 'Content-Type', 'application/json' );
+}
+
 Request.prototype.end = function (data) {
+    this.body = data;
+    set_content_type( this );
+    sign( this );
     this.proxy.end(data);
 };
 
 function error_handler( error ) {
     // what are args to error handler??
     var request = this;
-    console.log( "error " + error );
-    console.log( "for request " + request );
+    console.error( "error " + error );
+    console.error( "for request " + request );
 }
 
 // What would this do? - not create request...
@@ -299,6 +317,7 @@ module.exports.request = function ( options, callback ) {
     return new Request( options, callback );
 };
 
+// error behavior - dto is undefined and erro arg is err object
 function respond( dto ) {
     var callback = this;
     callback( dto );
@@ -308,6 +327,7 @@ function respond( dto ) {
  * trampoline() is used as a callback for an EdgeGrid request.
  */
 function trampoline( response ) {
+    // Check if there are errors here and throw an error - or call an err callback ?
     response.on( 'dto', respond.bind(this) );
 }
 
