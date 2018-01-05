@@ -347,7 +347,6 @@ module.exports.post = function ( path, callback ) {
 module.exports.put = function ( path, callback ) {
     var options = { method: "PUT", path: path };
     var request = new Request( options, trampoline.bind(callback) );
-    request.end();
     return request;
 };
 
