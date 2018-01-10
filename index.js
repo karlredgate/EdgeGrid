@@ -4,14 +4,14 @@ module.exports.Credentials = Credentials;
 module.exports.Request = Request;
 module.exports.Response = Response;
 
-var uuid  = require('uuid');
-var FS  = require('fs');
-var URL = require('url');
-var HTTPS = require('https');
-var Crypto = require('crypto');
-var util = require('util');
-var EventEmitter = require('events').EventEmitter;
-var Stream = require('stream').Stream;
+const uuid  = require('uuid');
+const FS  = require('fs');
+const URL = require('url');
+const HTTPS = require('https');
+const Crypto = require('crypto');
+const util = require('util');
+const EventEmitter = require('events').EventEmitter;
+const Stream = require('stream').Stream;
 
 const RC = process.env.HOME + "/.edgerc";
 
@@ -334,7 +334,6 @@ function trampoline( response ) {
 module.exports.get = function ( path, callback ) {
     var options = { path: path };
     var request = new Request( options, trampoline.bind(callback) );
-    request.end();
     return request;
 };
 
@@ -353,7 +352,6 @@ module.exports.put = function ( path, callback ) {
 module.exports.delete = function ( path, callback ) {
     var options = { method: "DELETE", path: path };
     var request = new Request( options, trampoline.bind(callback) );
-    request.end();
     return request;
 };
 
