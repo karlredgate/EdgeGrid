@@ -208,8 +208,9 @@ function sign( request ) {
     request.proxy.setHeader( 'Authorization', auth );
 }
 
-function Response( request ) {
+function Response( proxy ) {
     Stream.Readable.call( this );
+    this.proxy = proxy;
     this.body = '';
     this.object = {};
 }
@@ -239,6 +240,10 @@ function collect( chunk ) {
 }
 
 function end_handler() {
+    if ( this.proxy.statusCode === 204 ) {
+        this.emit( 'dto', null );
+        return;
+    }
     try {
         this.emit( 'dto', JSON.parse(this.body) );
     } catch (err) {
@@ -253,7 +258,7 @@ function readable_error( e ) {
 }
 
 function accept( response ) {
-    this.response = new Response();
+    this.response = new Response( response );
     this.response.on( 'error', readable_error.bind(response) );
 
     // listen for events on the HTTPS response
