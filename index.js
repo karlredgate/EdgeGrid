@@ -239,7 +239,12 @@ function collect( chunk ) {
 }
 
 function end_handler() {
-    this.emit( 'dto', JSON.parse(this.body) );
+    try {
+        this.emit( 'dto', JSON.parse(this.body) );
+    } catch (err) {
+        console.error( err );
+        console.error( this.body );
+    }
 }
 
 function readable_error( e ) {
