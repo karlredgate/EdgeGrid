@@ -244,6 +244,7 @@ function end_handler() {
     } catch (err) {
         console.error( err );
         console.error( this.body );
+        this.emit( 'error', err );
     }
 }
 
