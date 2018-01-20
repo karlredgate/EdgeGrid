@@ -334,11 +334,19 @@ function respond( dto ) {
     callback( dto );
 }
 
+function dump_dto( dto ) {
+    console.log( JSON.stringify(dto) );
+}
+
 /*
  * trampoline() is used as a callback for an EdgeGrid request.
  */
 function trampoline( response ) {
     // Check if there are errors here and throw an error - or call an err callback ?
+    if ( typeof this === 'undefined' ) {
+        console.error( "no callback provided - defaulting to dumping the dto" );
+        this = dump_dto;
+    }
     response.on( 'dto', respond.bind(this) );
 }
 
