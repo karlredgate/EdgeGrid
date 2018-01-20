@@ -343,11 +343,13 @@ function dump_dto( dto ) {
  */
 function trampoline( response ) {
     // Check if there are errors here and throw an error - or call an err callback ?
-    if ( typeof this === 'undefined' ) {
+
+    var callback = this;
+    if ( typeof callback === 'undefined' ) {
         console.error( "no callback provided - defaulting to dumping the dto" );
-        this = dump_dto;
+        callback = dump_dto;
     }
-    response.on( 'dto', respond.bind(this) );
+    response.on( 'dto', respond.bind(callback) );
 }
 
 module.exports.get = function ( path, callback ) {
