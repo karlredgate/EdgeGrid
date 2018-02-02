@@ -1,6 +1,6 @@
 {
-  "name": "edgegrid",
-  "productName": "edgegrid",
+  "name": "rededgegrid",
+  "productName": "rededgegrid",
   "version": "0.1.0",
   "description": "EdgeGrid auth for Akamai APIs",
   "main": "index.js",
@@ -17,12 +17,12 @@
   "license": "APACHE",
   "repository": {
     "type": "git",
-    "url": "git://github.com/karlredgate/EdgeGrid"
+    "url": "git://github.com/karlredgate/RedEdgeGrid"
   },
   "bugs": {
-    "url": "https://github.com/karlredgate/EdgeGrid/issues"
+    "url": "https://github.com/karlredgate/RedEdgeGrid/issues"
   },
-  "homepage": "https://github.com/karlredgate/EdgeGrid",
+  "homepage": "https://github.com/karlredgate/RedEdgeGrid",
   "devDependencies": {
   },
   "dependencies": {
