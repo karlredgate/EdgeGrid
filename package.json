@@ -26,6 +26,7 @@
   "devDependencies": {
   },
   "dependencies": {
-    "uuid": "*"
+    "uuid": "*",
+    "https-proxy-agent": "*"
   }
 }

@@ -12,6 +12,7 @@ const Crypto = require('crypto');
 const util = require('util');
 const EventEmitter = require('events').EventEmitter;
 const Stream = require('stream').Stream;
+const HttpsProxyAgent = require('https-proxy-agent');
 
 const RC = process.env.HOME + "/.edgerc";
 
@@ -137,7 +138,8 @@ function content( request ) {
         proxy.method.toUpperCase(),
         'https', // proxy.protocol, // url.protocol.replace(':',''),
         request.credentials.host, // url.host,
-        proxy.path, // url.path,
+        // proxy.path, // url.path,
+        request.path, // url.path,
         headers, // headers
         content_hash,
         request.auth
@@ -281,13 +283,20 @@ function Request( _params, callback ) {
     this.load_credentials( _params );
     this.headersToSign = [];
     this.callback = callback || default_response_handler;
+    this.path = _params.path;
+    if ( this.path == null ) throw new Error("Missing path argument");
 
     var params = {
         method: _params.method || 'GET',
-        // path:   _params.path || '/contract-api/v1/contracts/identifiers?depth=ALL',
-        path:   _params.path || '/papi/v1/groups',
+        path:   _params.path,
         host:   this.credentials.host,
+        // agent: agent
     };
+
+    let https_proxy = process.env['https_proxy'];
+    if ( https_proxy != null ) {
+        params.agent = new HttpsProxyAgent( https_proxy );
+    }
 
     this.proxy = HTTPS.request( params, accept.bind(this) );
     this.proxy.on( 'error', error_handler.bind(this.proxy) );
