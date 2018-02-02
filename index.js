@@ -256,9 +256,9 @@ function end_handler() {
         console.error( this.body );
         this.emit( 'error', err );
     }
-    if ( this.proxy.statusCode < 300 )  this.emit( 'dto', dto );
+    if ( this.proxy.statusCode < 300 )  return this.emit( 'dto', dto );
     // this should either redirect or error
-    if ( this.proxy.statusCode < 400 )  this.emit( 'dto', dto );
+    if ( this.proxy.statusCode < 400 )  return this.emit( 'dto', dto );
 
     // do an error?
     this.emit( 'client-error', dto );
