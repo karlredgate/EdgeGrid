@@ -246,13 +246,22 @@ function end_handler() {
         this.emit( 'dto', null );
         return;
     }
+
+    let dto = null;
     try {
-        this.emit( 'dto', JSON.parse(this.body) );
+        // check if content type is json
+        dto = JSON.parse(this.body);
     } catch (err) {
         console.error( err );
         console.error( this.body );
         this.emit( 'error', err );
     }
+    if ( this.proxy.statusCode < 300 )  this.emit( 'dto', dto );
+    // this should either redirect or error
+    if ( this.proxy.statusCode < 400 )  this.emit( 'dto', dto );
+
+    // do an error?
+    this.emit( 'client-error', dto );
 }
 
 function readable_error( e ) {
@@ -353,12 +362,14 @@ function dump_dto( dto ) {
 function trampoline( response ) {
     // Check if there are errors here and throw an error - or call an err callback ?
 
+    // this doesn't work - this is never undefined it seems
     var callback = this;
     if ( typeof callback === 'undefined' ) {
         console.error( "no callback provided - defaulting to dumping the dto" );
         callback = dump_dto;
     }
     response.on( 'dto', respond.bind(callback) );
+    response.on( 'client-error', respond.bind(callback) );
 }
 
 module.exports.get = function ( path, callback ) {
